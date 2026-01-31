@@ -78,8 +78,13 @@ class IssueAttachment(models.Model):
 class Vote(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name="votes")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="votes")
-    upvote = models.IntegerField(default=0)
-    downvote = models.IntegerField(default=0)
+    VOTE_CHOICES = (
+        (1, 'UpVote'),
+        (-1, 'DownVote'),
+        (0, 'No options'),
+    )
+    
+    value = models.IntegerField(choices=VOTE_CHOICES, default=0)
     
     created_at = models.DateTimeField(default=now)
     

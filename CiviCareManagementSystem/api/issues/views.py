@@ -26,7 +26,8 @@ class IssueViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy', 'vote']:
             permission_classes = [permissions.IsAuthenticated]
         else:
-            permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+            # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+            permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
@@ -64,7 +65,7 @@ class IssueViewSet(viewsets.ModelViewSet):
         """
         serializer.save()
 
-    @action(detail=True, methods=['post', 'get', 'delete'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post', 'get', 'delete'], permission_classes=[permissions.AllowAny])
     def vote(self, request, pk=None):
         """
         Vote on an issue (upvote or downvote).
@@ -76,27 +77,22 @@ class IssueViewSet(viewsets.ModelViewSet):
         user = request.user
         
         if request.method == 'POST':
-            upvote = request.data.get('upvote', False)
-            downvote = request.data.get('downvote', False)
+            value = request.data.get('value', 0)
             
-            # Validate that only one type of vote is provided
-            if upvote and downvote:
-                return Response(
-                    {'error': 'Cannot both upvote and downvote simultaneously'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            # Validate vote 
+            if value not in [-1, 0, 1]:
+                return Response({'error': 'Invalid vote value'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Get or create vote
             vote, created = Vote.objects.get_or_create(
                 user=user,
                 issue=issue,
-                defaults={'upvote': upvote, 'downvote': downvote}
+                defaults={'value': value}
             )
             
             if not created:
                 # Update existing vote
-                vote.upvote = upvote
-                vote.downvote = downvote
+                vote.value = value
                 vote.save()
             
             serializer = VoteSerializer(vote)
