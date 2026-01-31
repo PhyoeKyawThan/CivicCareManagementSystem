@@ -22,10 +22,9 @@ class VoteUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'full_name', 'first_name', 'last_name']
-
+    
 class VoteSerializer(serializers.ModelSerializer): 
     user = VoteUserSerializer(read_only=True)
-    
     class Meta:
         model = Vote
         fields = ['id', 'user', 'value', 'created_at']  

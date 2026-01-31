@@ -98,8 +98,23 @@ class IssueViewSet(viewsets.ModelViewSet):
                     vote.value = value
                     vote.save()
             
-            serializer = VoteSerializer(vote)
-            return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+            votes = Vote.objects.filter(issue=issue)
+            up = votes.filter(value=1).count()
+            down = votes.filter(value=-1).count()
+            score = up - down
+            
+            my_vote = 0
+            user_vote = votes.filter(user=user).first()
+            if user_vote:
+                my_vote = user_vote.value
+
+            vote_summary = {
+                "up": up,
+                "down": down,
+                "score": score,
+                "my_vote": my_vote
+            }
+            return Response(vote_summary, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
         
         elif request.method == 'GET':
             try:
