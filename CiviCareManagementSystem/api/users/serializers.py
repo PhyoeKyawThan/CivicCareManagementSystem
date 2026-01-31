@@ -9,7 +9,7 @@ from users.models import User
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'avatar', 'first_name', 'last_name', 'is_staff', 'date_joined']
+        fields = ['id', 'username', 'avatar', 'first_name', 'last_name', 'is_staff', 'date_joined']
         read_only_fields = ['id', 'username', 'email', 'is_staff', 'date_joined']
 
 class UserSerializer(serializers.ModelSerializer):

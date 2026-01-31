@@ -24,6 +24,7 @@ class IssueSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(read_only=True)
     issue_type_details = IssueTypeSerializer(source="issue_type", read_only=True)
     attachments = IssueAttachmentSerializer(many=True, read_only=True)
+    votes = VoteSerializer(many=True, read_only=True)
     
     attachment_files = serializers.ListField(
         child=serializers.FileField(max_length=10000, allow_empty_file=False),
@@ -38,7 +39,7 @@ class IssueSerializer(serializers.ModelSerializer):
             'title', 'description', 'status', 'priority',
             'location_latitude', 'location_longitude',
             'created_at', 'updated_at', 'closed_at',
-            'attachments', 'attachment_files'
+            'attachments', 'attachment_files', 'votes'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'closed_at']
         extra_kwargs = {
