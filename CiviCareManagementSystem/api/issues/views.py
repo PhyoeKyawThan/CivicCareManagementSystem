@@ -91,9 +91,12 @@ class IssueViewSet(viewsets.ModelViewSet):
             )
             
             if not created:
+                if value == 0:
+                    vote.delete()
                 # Update existing vote
-                vote.value = value
-                vote.save()
+                else:
+                    vote.value = value
+                    vote.save()
             
             serializer = VoteSerializer(vote)
             return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
