@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'CiviCareManagementSystem.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://dom:domak@localhost:5432/ccms_db',
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600
     )
     # 'default': {
