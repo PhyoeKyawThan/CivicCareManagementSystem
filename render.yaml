@@ -1,0 +1,22 @@
+databases:
+  - name: ccms_db
+    plan: free
+    databaseName: ccms_db
+    user: domisuser
+
+services:
+  - type: web
+    plan: free
+    name: CiviCareManagementSystem
+    runtime: python
+    buildCommand: './build.sh'
+    startCommand: 'python -m gunicorn CiviCareManagementSystem.asgi:application -k uvicorn.workers.UvicornWorker'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ccms_db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
