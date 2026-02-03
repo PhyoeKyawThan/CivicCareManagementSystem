@@ -29,6 +29,12 @@ class VoteSerializer(serializers.ModelSerializer):
         model = Vote
         fields = ['id', 'user', 'value', 'created_at']  
 
+# for search suggestions
+class IssueSlimSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = ['id', 'title']
+
 class IssueSerializer(serializers.ModelSerializer):  
     user = UserProfileSerializer(read_only=True)
     issue_type_details = IssueTypePostSerializer(source="issue_type", read_only=True)

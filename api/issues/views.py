@@ -5,7 +5,7 @@ from rest_framework import serializers
 from django_filters.rest_framework import DjangoFilterBackend
 from users.models import User
 from issues.models import Issue, IssueAttachment, IssueType, Vote
-from .serializers import IssueSerializer, IssueAttachmentSerializer, IssueTypeSerializer, VoteSerializer
+from .serializers import IssueSerializer, IssueSlimSerializer,IssueAttachmentSerializer, IssueTypeSerializer, VoteSerializer
 
 class IssueViewSet(viewsets.ModelViewSet):
     """
@@ -29,7 +29,10 @@ class IssueViewSet(viewsets.ModelViewSet):
             # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
-
+    def get_serializer_class(self):
+        if self.request.query_params.get('search'):
+            return IssueSlimSerializer
+        return IssueSerializer
     def get_queryset(self):
         """
         Optionally restricts the returned issues based on query parameters.
@@ -38,9 +41,11 @@ class IssueViewSet(viewsets.ModelViewSet):
         
         # Filter by user if requested
         user_id = self.request.query_params.get('user_id', None)
+        search_title = self.request.query_params.get('search_title', None)
         if user_id is not None:
             queryset = queryset.filter(user__id=user_id)
-        
+        if search_title:
+            queryset = queryset.filter(title__icontains=search_title)
         # Filter by location radius (example implementation)
         lat = self.request.query_params.get('lat', None)
         lng = self.request.query_params.get('lng', None)
