@@ -31,10 +31,10 @@ class Issue(models.Model):
 
     STATUS_CHOICES = (
         ('pending', 'Pending'),
-        ('open', 'Open'),
+        ('accepted', 'Accepted'),
         ('in_progress', 'In Progress'),
         ('resolved', 'Resolved'),
-        ('closed', 'Closed'),
+        ('cancelled', 'Cancelled'),
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
 
