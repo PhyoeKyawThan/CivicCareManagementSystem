@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Notification Test</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 40px; color: #333; }
+        .form-container { background: white; max-width: 500px; margin: 0 auto; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; margin-top: 20px; cursor: pointer; font-size: 1rem; }
+        .btn:hover { background: #0056b3; }
+        .hint { font-size: 0.8rem; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>🚀 Trigger Notification</h2>
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Recipient User (ID)</label>
+        <input type="text" name="user" placeholder="Target User UUID or ID" required>
+        <p class="hint">The person who will receive the alert.</p>
+
+        <label>Actor User (ID) - Optional</label>
+        <input type="text" name="actor" placeholder="Triggering User ID">
+        <p class="hint">The person who caused the alert (e.g., the commenter).</p>
+
+        <label>Title</label>
+        <input type="text" name="title" placeholder="New Issue Reported" required>
+
+        <label>Body</label>
+        <textarea name="body" rows="3" placeholder="A new issue has been logged in your area..." required></textarea>
+
+        <label>Event Type</label>
+        <select name="event_type">
+            <option value="citizen_issue_reported">Citizen Issue Reported</option>
+            <option value="citizen_issue_resolved">Citizen Issue Resolved</option>
+        </select>
+
+        <label>Reference URL</label>
+        <input type="text" name="ref_url" placeholder="/issues/123/">
+
+        <label>JSON Data (Optional)</label>
+        <textarea name="data" rows="2" placeholder='{"issue_id": "123", "priority": "high"}'></textarea>
+
+        <button type="submit" class="btn">Create & Send Notification</button>
+    </form>
+</div>
+
+</body>
+</html>

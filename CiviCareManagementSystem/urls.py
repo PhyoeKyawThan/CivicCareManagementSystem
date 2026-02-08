@@ -27,7 +27,12 @@ urlpatterns = [
     path('api/v1/user/', include('api.users.urls')),
     
     #issues
-     path('api/v1/', include('api.issues.urls'))
+    path('api/v1/', include('api.issues.urls')),
+
+    #notifications
+    path('api/v1/', include('api.notifications.urls')),
+    #notifications
+    path('notification/', include('notifications.urls')),
 ]
 
 # serve media file as static file 
