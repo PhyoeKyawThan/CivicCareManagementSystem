@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from users.models import User
 from issues.models import Issue, IssueAttachment, IssueType, Vote
 from .serializers import IssueSerializer, IssueSlimSerializer,IssueAttachmentSerializer, IssueTypeSerializer, VoteSerializer
+from django.utils import timezone
+from datetime import timedelta
 
 class IssueViewSet(viewsets.ModelViewSet):
     """
@@ -46,6 +48,11 @@ class IssueViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user__id=user_id)
         if search_title:
             queryset = queryset.filter(title__icontains=search_title)
+
+        recent_issues_param = self.request.query_params.get('recent_issues', None)
+        if recent_issues_param:
+            time_threshold = timezone.now() - timedelta(days=7)
+            queryset = queryset.filter(created_at__gte=time_threshold)
         # Filter by location radius (example implementation)
         lat = self.request.query_params.get('lat', None)
         lng = self.request.query_params.get('lng', None)
